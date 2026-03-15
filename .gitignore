@@ -159,6 +159,7 @@ cython_debug/
 # Project Specific
 data/raw/
 data/processed/
+!data/**/.gitkeep
 models/*.pkl
 models/metadata.json
 models/demo_feature_names.json
