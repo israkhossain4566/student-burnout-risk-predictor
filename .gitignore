@@ -157,9 +157,11 @@ cython_debug/
 .streamlit/
 
 # Project Specific
-data/raw/
-data/processed/
-!data/**/.gitkeep
+data/raw/**
+data/processed/**
+!data/raw/**/
+!data/processed/**/
+!**/.gitkeep
 models/*.pkl
 models/metadata.json
 models/demo_feature_names.json
