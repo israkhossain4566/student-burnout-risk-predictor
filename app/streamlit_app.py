@@ -145,41 +145,41 @@ def main():
                 for d in drivers:
                     st.markdown(f"- **{d}**")
 
-    # Final Demo-Day Information Sections
-    st.divider()
-    
-    inf_col1, inf_col2 = st.columns(2)
-    
-    with inf_col1:
-        st.subheader("Model Information")
-        st.markdown(
-            f"""
-            **Model Type**:  
-            Logistic Regression
+            # Final Demo-Day Information Sections (Appears only after prediction)
+            st.divider()
             
-            *Note: This architecture was selected as it **outperformed** other candidates (Random Forest, SVM) in providing logically consistent and reliable predictions for this domain.*
-
-            **Dataset**:  
-            StudentLife behavioral dataset
-
-            **Primary Features Used**:
-            - Sleep deficit
-            - Perceived stress level
-            - Academic workload
-            - Physical activity deficit
-            - Social interaction deficit
-            """
-        )
-
-    with inf_col2:
-        st.subheader("How the Model Works")
-        st.info(
-            "The model estimates burnout risk by analyzing behavioral patterns "
-            "linked to academic strain. Worsening lifestyle factors (e.g., lower sleep, "
-            "higher stress, isolation) monotonically increase the predicted risk score.\n\n"
-            "By enforcing monotonicity, we ensure the system remains scientifically honest "
-            "and logically predictable for real-world scenarios."
-        )
+            inf_col1, inf_col2 = st.columns(2)
+            
+            with inf_col1:
+                st.subheader("Model Information")
+                st.markdown(
+                    f"""
+                    **Model Type**:  
+                    Logistic Regression
+                    
+                    *Note: This architecture was selected as it **outperformed** other candidates (Random Forest, SVM) in providing logically consistent and reliable predictions for this domain.*
+        
+                    **Dataset**:  
+                    StudentLife behavioral dataset
+        
+                    **Primary Features Used**:
+                    - Sleep deficit
+                    - Perceived stress level
+                    - Academic workload
+                    - Physical activity deficit
+                    - Social interaction deficit
+                    """
+                )
+        
+            with inf_col2:
+                st.subheader("How the Model Works")
+                st.info(
+                    "The model estimates burnout risk by analyzing behavioral patterns "
+                    "linked to academic strain. Worsening lifestyle factors (e.g., lower sleep, "
+                    "higher stress, isolation) monotonically increase the predicted risk score.\n\n"
+                    "By enforcing monotonicity, we ensure the system remains scientifically honest "
+                    "and logically predictable for real-world scenarios."
+                )
 
     st.divider()
     st.caption(
