@@ -167,8 +167,3 @@ models/background_sample.csv
 models/best_models_info.txt
 *.log
 tmp/
-
-data/raw/Activity/*
-data/raw/Sleep/*
-data/raw/Stress/*
-data/processed/*
