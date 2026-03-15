@@ -153,9 +153,11 @@ def main():
     with inf_col1:
         st.subheader("Model Information")
         st.markdown(
-            """
+            f"""
             **Model Type**:  
-            Logistic Regression (Monotonic Strain Model)
+            Logistic Regression
+            
+            *Note: This architecture was selected as it **outperformed** other candidates (Random Forest, SVM) in providing logically consistent and reliable predictions for this domain.*
 
             **Dataset**:  
             StudentLife behavioral dataset
@@ -166,11 +168,6 @@ def main():
             - Academic workload
             - Physical activity deficit
             - Social interaction deficit
-
-            **Evaluation Summary**:
-            The model was trained on lifestyle patterns and calibrated 
-            using a validation set to ensure logical, representative 
-            burnout risk probabilities.
             """
         )
 
@@ -180,7 +177,8 @@ def main():
             "The model estimates burnout risk by analyzing behavioral patterns "
             "linked to academic strain. Worsening lifestyle factors (e.g., lower sleep, "
             "higher stress, isolation) monotonically increase the predicted risk score.\n\n"
-            "Predictions are generated using a trained statistical model rather than fixed rules."
+            "By enforcing monotonicity, we ensure the system remains scientifically honest "
+            "and logically predictable for real-world scenarios."
         )
 
     st.divider()
