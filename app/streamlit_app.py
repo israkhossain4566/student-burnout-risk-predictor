@@ -37,6 +37,8 @@ def load_demo_artifacts():
         with open(meta_path) as f:
             meta = json.load(f)
             model_name = meta.get("best_demo_name", model_name)
+            if model_name == "ConstrainedLogReg":
+                model_name = "Logistic Regression"
             
     return pipeline, feature_names, model_name
 
@@ -198,7 +200,7 @@ def main():
                 st.markdown(
                     f"""
                     **Model Type**:  
-                    Logistic Regression
+                    {model_name}
                     
                     *Note: This architecture was selected as it **outperformed** other candidates (Random Forest, SVM) in providing logically consistent and reliable predictions for this domain.*
         
