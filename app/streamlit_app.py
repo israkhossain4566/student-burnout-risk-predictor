@@ -14,6 +14,7 @@ from config.paths import MODELS_PATH
 from src.config import get_risk_label, get_risk_color
 from src.demo.input_mapping import user_inputs_to_feature_row
 from src.training.constrained_model import ConstrainedLogged
+from src.demo.shap_utils import get_shap_explanation
 
 st.set_page_config(page_title="AI Student Burnout Risk Predictor", layout="wide")
 
@@ -140,10 +141,52 @@ def main():
                 else:
                     st.success("**Stable Pattern**: Your current lifestyle metrics suggest high resilience and low burnout risk.")
             
-            if drivers:
-                st.markdown("### Key Risk Drivers")
-                for d in drivers:
-                    st.markdown(f"- **{d}**")
+            # 4. SHAP Explanation
+            st.markdown("### Decision Drivers")
+            st.markdown(
+                """
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                    <span style="font-size: 0.85rem; color: #666;">Analysis powered by</span>
+                    <span style="background: #e1f5fe; color: #01579b; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; border: 1px solid #b3e5fc;">XAI SHAP</span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                "The factors below contributed most to your risk score. "
+                "**Green** bars indicate factors reducing risk, while **Red** bars indicate factors increasing it."
+            )
+            
+            shap_df = get_shap_explanation(pipeline, row)
+            
+            # Filter to show top N significant drivers or all if few
+            top_drivers = shap_df.head(6) 
+            
+            for _, r in top_drivers.iterrows():
+                val = r["Impact"]
+                label = r["Feature"]
+                # Display a simple bar with a label
+                color = "#ff4b4b" if val > 0 else "#28a745"
+                # Normalize width for visualization - max impact usually around 1.0-2.0
+                width = min(100, abs(val) * 60) 
+                
+                direction = "increases" if val > 0 else "decreases"
+                abs_val = abs(val)
+                
+                st.markdown(
+                    f"""
+                    <div style="margin-bottom: 0.8rem; background: #1b1c21; padding: 12px; border-radius: 12px; border-left: 5px solid {color}; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px;">
+                            <span style="font-weight: 600; color: #f0f2f6;">{label}</span>
+                            <span style="color: {color}; font-weight: bold; letter-spacing: 0.05em;">{direction} risk ({abs_val:.2f})</span>
+                        </div>
+                        <div style="background-color: #31333f; border-radius: 6px; height: 12px; width: 100%; border: 1px solid #444;">
+                            <div style="background-color: {color}; height: 100%; width: {width}%; border-radius: 6px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             # Final Demo-Day Information Sections (Appears only after prediction)
             st.divider()
