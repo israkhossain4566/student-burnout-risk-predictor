@@ -202,7 +202,7 @@ def main():
                     **Model Type**:  
                     {model_name}
                     
-                    *Note: This architecture was selected as it **outperformed** other candidates (Random Forest, SVM) in providing logically consistent and reliable predictions for this domain.*
+                    *Note: This architecture was selected as it **outperformed** other candidates (Random Forest, SVM, Gradient Boosting) in providing logically consistent and reliable predictions for this domain.*
         
                     **Dataset**:  
                     StudentLife behavioral dataset
