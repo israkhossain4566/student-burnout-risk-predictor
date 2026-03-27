@@ -60,6 +60,36 @@ def get_risk_drivers(inputs: dict) -> list:
 def main():
     st.title("AI Student Burnout Risk Predictor")
     st.markdown(
+        """
+        <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out;
+        }
+        .animate-slideUp {
+            animation: slideUp 0.8s ease-out both;
+        }
+        .animate-pulse {
+            display: inline-block;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown(
         "Predict your burnout risk based on lifestyle patterns. "
         "This model is tuned to respond meaningfully to your current lifestyle choices."
     )
@@ -113,17 +143,17 @@ def main():
         with rcol1:
             st.markdown(
                 f"""
-                <div style="padding:1.5rem;border-radius:1rem;
+                <div class="animate-slideUp" style="padding:1.5rem;border-radius:1rem;
                             background:linear-gradient(135deg,{color}22,{color}11);
                             border:2px solid {color};text-align:center;box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                   <p style="margin:0;font-size:0.9rem;color:#888;letter-spacing:0.15em;font-weight:bold;">
                     ANNUALIZED RISK PROXIMITY
                   </p>
-                  <h1 style="margin:0.2rem 0;color:{color};font-size:3.2rem;font-weight:900;text-transform:uppercase;">
+                  <h1 class="animate-pulse" style="margin:0.2rem 0;color:{color};font-size:3.2rem;font-weight:900;text-transform:uppercase;">
                     {level}
                   </h1>
                   <p style="margin:0;font-size:1.6rem;color:{color};font-weight:700;">
-                    {(prob * 100):.1f}% Prob.
+                    {(prob * 100):.1f}% Probability
                   </p>
                 </div>
                 """,
@@ -164,31 +194,37 @@ def main():
             # Filter to show top N significant drivers or all if few
             top_drivers = shap_df.head(6) 
             
-            for _, r in top_drivers.iterrows():
-                val = r["Impact"]
-                label = r["Feature"]
-                # Display a simple bar with a label
-                color = "#ff4b4b" if val > 0 else "#28a745"
-                # Normalize width for visualization - max impact usually around 1.0-2.0
-                width = min(100, abs(val) * 60) 
-                
-                direction = "increases" if val > 0 else "decreases"
-                abs_val = abs(val)
-                
-                st.markdown(
-                    f"""
-                    <div style="margin-bottom: 0.8rem; background: #1b1c21; padding: 12px; border-radius: 12px; border-left: 5px solid {color}; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px;">
-                            <span style="font-weight: 600; color: #f0f2f6;">{label}</span>
-                            <span style="color: {color}; font-weight: bold; letter-spacing: 0.05em;">{direction} risk ({abs_val:.2f})</span>
+            if top_drivers.empty:
+                st.warning("No significant decision drivers detected for this profile.")
+            else:
+                for i, (_, r) in enumerate(top_drivers.iterrows()):
+                    val = r["Impact"]
+                    label = r["Feature"]
+                    # Display a simple bar with a label
+                    color = "#ff4b4b" if val > 0 else "#28a745"
+                    # Normalize width for visualization - max impact usually around 1.0-2.0
+                    width = min(100, abs(val) * 60) 
+                    
+                    direction = "increases" if val > 0 else "decreases"
+                    abs_val = abs(val)
+                    
+                    # Staggered entry animation delay
+                    delay = i * 0.1
+                    
+                    st.markdown(
+                        f"""
+                        <div class="animate-slideUp" style="margin-bottom: 0.8rem; background: #1b1c21; padding: 12px; border-radius: 12px; border-left: 5px solid {color}; box-shadow: 0 2px 4px rgba(0,0,0,0.2); animation-delay: {delay}s;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px;">
+                                <span style="font-weight: 600; color: #f0f2f6;">{label}</span>
+                                <span style="color: {color}; font-weight: bold; letter-spacing: 0.05em;">{direction} risk ({abs_val:.2f})</span>
+                            </div>
+                            <div style="background-color: #31333f; border-radius: 6px; height: 12px; width: 100%; border: 1px solid #444;">
+                                <div style="background-color: {color}; height: 100%; width: {width}%; border-radius: 6px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                            </div>
                         </div>
-                        <div style="background-color: #31333f; border-radius: 6px; height: 12px; width: 100%; border: 1px solid #444;">
-                            <div style="background-color: {color}; height: 100%; width: {width}%; border-radius: 6px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);"></div>
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                        """,
+                        unsafe_allow_html=True
+                    )
 
             # Final Demo-Day Information Sections (Appears only after prediction)
             st.divider()
